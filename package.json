@@ -1,0 +1,19 @@
+{
+  "name": "custom2image",
+  "version": "1.0.0",
+  "description": "自定义生成图片内容和样式",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BETH-zhang/custom2image.git"
+  },
+  "author": "Beth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BETH-zhang/custom2image/issues"
+  },
+  "homepage": "https://github.com/BETH-zhang/custom2image#readme"
+}
