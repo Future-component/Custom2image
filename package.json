@@ -1,5 +1,5 @@
 {
-  "name": "custom2image",
+  "name": "Custom2image",
   "version": "1.0.0",
   "description": "自定义生成图片内容和样式",
   "main": "index.js",
