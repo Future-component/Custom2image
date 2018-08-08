@@ -1,0 +1,50 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.body {
+  width: 1100px;
+  margin: 0 auto;
+}
+
+input[type="button"] {
+  display: inline-block;
+  width: 120px;
+  height: 35px;
+  line-height: 35px;
+  border: 0;
+  border-radius: 10px;
+  background: #03A9F4;
+  color: #fff;
+}
+
+input[type="button"]:hover {
+  background: #3F51B5;
+  cursor: pointer;
+}
+
+.eidt-tools {
+  line-height: 35px;
+  color: #999;
+}
+
+.left,
+.right {
+  width: 50%;
+  float: left;
+}
+
+.clear {
+  clear: both;
+}
+
+.ruler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.3;
+  width: 10px;
+}

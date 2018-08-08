@@ -14,7 +14,7 @@
  * 5.如何暴露接口
  * 6.如何将任意的html导出图片
  * 7.处理不同格式的图片
- * 8.SVG图片下载问题：http://fex.baidu.com/blog/2015/11/convert-svg-to-png-at-frontend/
+ * 8.完善配置文档
  */
 
  // webpack通用模块定义
@@ -40,7 +40,7 @@
 
  })(this, function() {
 
-	var logger = console.log
+	var logger = () => ({}) || console.log
 
 	var getProto = Object.getPrototypeOf;
 
@@ -178,6 +178,7 @@
 
 	// 保存画布
 	var canvas2image = (function() {
+		var strDownloadMime = "image/octet-stream";
 		var saveFile = function(data, filename) {
 			var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
 			save_link.href = data;
@@ -230,12 +231,6 @@
 			backgroundColor: '#fff',
 			position: [0, 0],
 			data: {
-				logo: {
-					type: 'image',
-					src: '/images/logo.png',
-					position: [50, 30],
-					size: [110, 40],
-				},
 				bg: {
 					type: 'rect',
 					fillStyle: '#f2f2f2',
@@ -285,40 +280,11 @@
 				// this.initPaintBoard();
 			},
 
-			initPaintBoard: function() {
-				var self = this;
-				// 在画布上画操作
-				oCanvas.onmousedown = function(e) {
-					bMouseIsDown = true;
-					iLastX = self.getCanvasXY(e).x;
-					iLastY = self.getCanvasXY(e).y;
-				}
-				oCanvas.onmousemove = function(e) {
-					if (bMouseIsDown) {
-						// TODO: 支持画图和内容移动
-						self.onmousemoveLine(e);
-						switch (changeCanvasBtn.value) {
-							case "Line":
-								self.onmousemoveLine(e);
-								break;
-							case "Move":
-								self.onmousemoveMove(e);
-								break;
-						}
-					}
-				}
-				oCanvas.onmouseup = function() {
-					bMouseIsDown = false;
-					iLastX = -1;
-					iLastY = -1;
-				}
-			},
-
 			recursionAsync: function(count, config, data) {
 				var self = this;
 				logger(count)
 				if (count === 0) {
-					logger('All is Done!');
+					logger('All is Done!', __CONFIG__);
 					if (__CONFIG__.auto) {
 						this.downloadImg();
 					}
@@ -371,6 +337,7 @@
 				oCtx.scale(ratio, ratio);
 
 				// data:image/svg+xml 必须有
+				// data:image/svg+xml;base64,
 				var svg = `
 					<svg xmlns="http://www.w3.org/2000/svg" width="${htmlWidth}" height="${htmlHeight}">
 						<foreignObject width="100%" height="100%">
@@ -378,12 +345,13 @@
 						</foreignObject>
 					</svg>
 				`;
-				// blob:http://127.0.0.1:8081/10a239c3-90ba-4a5e-85cb-040e9bcc0de5
-				// blob:http://127.0.0.1:8081/4c1434a1-e765-4cf8-96e6-594c0b47902d
 				config = _extends({}, config, {
-					src: URL.createObjectURL(new Blob([svg], {
-						type: 'image/svg+xml'
-					})),
+					// 只能实现转换，下载有问题
+					// src: URL.createObjectURL(new Blob([svg], {
+					// 	type: 'image/svg+xml'
+					// })),
+					//给图片对象写入base64编码的svg流
+					src: 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svg))), 
 					size: [htmlWidth, htmlHeight]
 				})
 
@@ -393,7 +361,6 @@
 			drawImage: function(config, data, callback) {
 				var image = new Image();
 				// 图片必须的相同域名，如果是非本地的不能保存成功
-				image.src = data || config.src || '/images/logo.png';
 				// 解决图片跨域问题
 				image.setAttribute('crossOrigin', 'anonymous');
 				logger(image.src, '====img====', image);
@@ -404,6 +371,7 @@
 						callback()
 					}
 				}
+				image.src = data || config.src || '/default.png';
 				logger(image.complete, '图片加载完成')
 			},
 
@@ -424,10 +392,55 @@
 				}
 			},
 
+			// 下载
 			downloadImg: function(type) {
 				var imgType = type || __CONFIG__.type;
 				if (['PNG', 'JPEG', 'SVG'].indexOf(imgType) !== -1) {
 					this.saveCanvas(oCanvas, imgType);
+				}
+			},
+
+      saveCanvas: function(pCanvas, strType) {
+				var bRes = false;
+        if (strType == "PNG")
+          bRes = canvas2image.saveAsPNG(oCanvas, this.data.title || (new Date()).getTime());
+        if (strType == "JPEG")
+          bRes = canvas2image.saveAsJPEG(oCanvas, this.data.title || (new Date()).getTime());
+				if (strType == 'SVG')
+					bRes = canvas2image.saveAsImg(oCanvas, this.data.title || (new Date()).getTime());
+        if (!bRes) {
+          alert("Sorry, this browser is not capable of saving " + strType + " files!");
+          return false;
+        }
+			},
+
+			// 暂时忽略
+			initPaintBoard: function() {
+				var self = this;
+				// 在画布上画操作
+				oCanvas.onmousedown = function(e) {
+					bMouseIsDown = true;
+					iLastX = self.getCanvasXY(e).x;
+					iLastY = self.getCanvasXY(e).y;
+				}
+				oCanvas.onmousemove = function(e) {
+					if (bMouseIsDown) {
+						// TODO: 支持画图和内容移动
+						self.onmousemoveLine(e);
+						switch (changeCanvasBtn.value) {
+							case "Line":
+								self.onmousemoveLine(e);
+								break;
+							case "Move":
+								self.onmousemoveMove(e);
+								break;
+						}
+					}
+				}
+				oCanvas.onmouseup = function() {
+					bMouseIsDown = false;
+					iLastX = -1;
+					iLastY = -1;
 				}
 			},
 
@@ -463,19 +476,6 @@
         logger(x, y)
 			},
 			
-      saveCanvas: function(pCanvas, strType) {
-				var bRes = false;
-        if (strType == "PNG")
-          bRes = canvas2image.saveAsPNG(oCanvas, this.data.title);
-        if (strType == "JPEG")
-          bRes = canvas2image.saveAsJPEG(oCanvas, this.data.title);
-				if (strType == 'SVG')
-					bRes = canvas2image.saveAsImg(oCanvas, this.data.title);
-        if (!bRes) {
-          alert("Sorry, this browser is not capable of saving " + strType + " files!");
-          return false;
-        }
-			},
 		}
 	}
 
@@ -488,7 +488,7 @@
 			this.element = element;
 			// 数据内容
 			this.meta = data || { detail: {} };
-			// 模板引擎配置
+			// 数据渲染引擎配置
 			this.module = module;
 			// 图片模板配置
 			this.template = template;
@@ -528,18 +528,20 @@
  			}
 		},
 
+		// 基于canvas
 		// 更新store数据
 		update(data) {
 			logger(this.meta, this.module, data, '000')
 			this.meta = _extends({}, this.meta, data);
-			this.load();
+			this._load();
 		},
 
 		// 对外直接暴露修改canvas的接口
 		initCanves: function(data) {
-			this.canvas = canvas(this.element, this.template);
 			logger(this.template, '===', this)
 			this.template = _extends({}, this.template, this.download);
+			this.canvas = canvas(this.element, this.template);
+
 			this.canvas.init(data, this.template);
 		},
 

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>在线导出图片</title>
+    <meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">
+    <link rel="stylesheet" href="./css/index.css?t=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="body">
+      <div id="html"></div>
+      <div id="app" style="display: inline-block">
+        <h1 id="app">HTML</h1>
+        <ul>
+          <li>
+              王贤|K8s|容器集群管理系统|2018年8月2日@周四@15:00-18:00
+              <button class="btn btn-primary createImg" key="0">生成图片</button>
+          </li>
+        </ul>
+      </div>
+      <hr />
+      <p>
+        <input id="createsvgbtn" type="button" value="生成网页图片">
+        <input id="savesvgbtn" type="button" value="保存网页图片">
+        <input id="savepngbtn" type="button" value="保存PNG图片">
+        <!-- <input id="savebmpbtn" type="button" value="保存BMP图片">
+        <input id="savejpegbtn" type="button" value="保存JPEG图片"> -->
+      </p>
+      <hr />
+      <div id="svg"></div> 
+      <div class="ruler"></div>
+      <div class="eidt-tools left">
+        备注：分享人|分享主题|分享子标题|2018年4月11日/周三/15:00-18:00<br />
+        图片大小：405*270<br />
+        往期分享：
+        <ul id="shareList" class="css11f27feee3400c"></ul>
+      </div>
+      <div class="right">
+        <div class="form-group">
+          <label for="mc">分享人</label>
+          <input type="text" class="form-control" id="mc" aria-describedby="emailHelp" placeholder="请填写分享人姓名">
+        </div>
+        <div class="form-group">
+          <label for="title">分享主题</label>
+          <input type="text" class="form-control" id="title" placeholder="请填写一个主题">
+        </div>
+        <div class="form-group">
+          <label for="subTitle">分享主题</label>
+          <input type="text" class="form-control" id="subTitle" placeholder="请填写一个副标题">
+        </div>
+        <div class="form-group">
+          <label for="schedule">分享日期</label>
+          <input type="date" class="form-control" id="schedule" placeholader="请填写分享日期"/>
+        </div>
+
+        <button id="saveBtn" class="btn btn-primary">生成图片</button>
+        <br />
+        <br />
+        <canvas id="mycanvas" style="border: 30px solid #f2f2f2;">你的浏览器不支持画布技术，请使用谷歌浏览器/火狐浏览器或最新的IE9/10/11。</canvas>
+      </div>
+      <div class="clear"></div>
+  </div>
+
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+  <script type="text/javascript" src="../index.js?t=3"></script>
+  <script type="text/javascript">
+    $(function() {
+      var formateDetail = function(data) {
+        var currentDataTmp = data.split("|");
+        var mc = currentDataTmp[0];
+        var title = currentDataTmp[1];
+        var subTitle = currentDataTmp[2];
+        var schedule = currentDataTmp[3];
+        var address = "海淀区大柳树富海大厦2号楼1102  Tad会议室";
+        return {
+          mc: mc,
+          title: title,
+          subTitle: subTitle,
+          schedule: schedule,
+          address: address,
+          cover: './images/' + data + '.jpg'
+        }
+      };
+
+      $.getJSON("./config/data.json?t=6", function(data) {
+        $.getJSON("./config/template2.json?t=4", function(template) {
+            Custom2image.init({
+              data,
+              module: {
+                "html": {
+                  "view": document.getElementById('html'),
+                  "refresh": function() {
+                    var self = this;
+                    var ele = `<h1>${this.data.h1}</h1>`;
+                    this.view.innerHTML = ele;
+                  },
+                },
+                "list": {
+                  "view": document.getElementById('shareList'),
+                  "refresh": function() {
+                    var self = this;
+                    var eleDiv = [];
+                    this.data.forEach(function(item, index) {
+                      eleDiv.push(`<li>${item}<button class='btn btn-primary createImg' key='${index}'>生成图片</button></li>`);
+                    });
+                    this.view.innerHTML = eleDiv.join("");
+                    var btns = document.getElementsByClassName('createImg');
+                    for (var i = 0; i < btns.length; i++) {
+                      btns[i].onclick = function() {
+                        var btnIndex = this.getAttribute('key');
+                        var detail = {};
+                        if (self.data[btnIndex]) {
+                          detail = formateDetail(self.data[btnIndex]);
+                        }
+                        Custom2image.initCanves(detail)
+                      }
+                    }
+                  }
+                },
+              },
+              element: document.getElementById('mycanvas'),
+              template,
+              download: {
+                type: 'PNG',
+                auto: false,
+              },
+            });
+        })
+      });
+
+      $('#saveBtn').click(function() {
+        var detail = {};
+        var inputs = $('.form-control');
+        Object.keys(inputs).forEach(function (item) {
+          var input = inputs[item];
+          if (typeof input === 'object' && $(input).attr('id')) {
+            detail[$(input).attr('id')] = $(input).val();
+          }
+        })
+        Custom2image.update({ detail: detail })
+      });
+
+      $('#savepngbtn').click(function() {
+        Custom2image.downloadImg('JPEG')
+      })
+
+      $('#createsvgbtn').click(function() {
+        $.getJSON("./config/template3.json?t=3", function(template) {
+          Custom2image.init({
+            element: document.getElementById('mycanvas'),
+            template,
+            download: {
+              type: 'SVG',
+              auto: false,
+            },
+          });
+        })
+      })
+
+      $('#savesvgbtn').click(function() {
+        Custom2image.downloadImg('SVG');
+      })
+    })
+  </script>
+  </body>
+  </html>

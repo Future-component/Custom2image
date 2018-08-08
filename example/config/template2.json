@@ -1,0 +1,62 @@
+{
+  "width": 500,
+  "height": 610,
+  "backgroundColor": "#fff",
+  "position": [0, 0],
+  "data": {
+    "logo": {
+      "type": "image",
+      "src": "./images/logo.png",
+      "position": [50, 30],
+      "size": [110, 40]
+    },
+    "bg": {
+      "type": "rect",
+      "fillStyle": "#f2f2f2",
+      "position": [48, 88],
+      "size": [404, 274]
+    },
+    "cover": {
+      "type": "image",
+      "position": [50, 90],
+      "size": [400, 270]
+    },
+    "title": {
+      "type": "text",
+      "fillStyle": "#405aa5",
+      "font": "38px Microsoft YaHei",
+      "position": [50, 420]
+    },
+    "subTitle": {
+      "type": "text",
+      "fillStyle": "#000",
+      "font": "24px Microsoft YaHei",
+      "position": [50, 460]
+    },
+    "mc": {
+      "type": "text",
+      "fillStyle": "#000",
+      "font": "16px Microsoft YaHei",
+      "position": [50, 500]
+    },
+    "icon": {
+      "type": "image",
+      "src": "./images/icon.png",
+      "position": [50, 520],
+      "size": [20, 35]
+    },
+    "schedule": {
+      "type": "text",
+      "fillStyle": "#000",
+      "font": "14px Microsoft YaHei",
+      "position": [80, 533]
+    },
+    "address": {
+      "type": "text",
+      "fillStyle": "#000",
+      "font": "14px Microsoft YaHei",
+      "text": "上园村知行大厦2楼",
+      "position": [80, 554]
+    } 
+  }
+}

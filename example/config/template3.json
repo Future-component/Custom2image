@@ -1,0 +1,13 @@
+{
+  "width": 500,
+  "height": 610,
+  "backgroundColor": "#fff",
+  "position": [0, 0],
+  "data": {
+    "logo": {
+      "type": "html",
+      "id": "app",
+      "position": [0, 0]
+    }
+  }
+}

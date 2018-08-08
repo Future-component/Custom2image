@@ -1,0 +1,45 @@
+{
+  "width": 400,
+  "height": 600,
+  "backgroundColor": "#007bff",
+  "position": [0, 0],
+  "data": {
+    "bgImg": {
+      "type": "image",
+      "src": "./images/bg1.jpg",
+      "position": [0, 0],
+      "size": [400, 600]
+    },
+    "title": {
+      "type": "text",
+      "fillStyle": "#fff",
+      "font": "38px LiDeBiao-Xing313a04d1d3b1dada",
+      "position": [50, 220]
+    },
+    "subTitle": {
+      "type": "text",
+      "fillStyle": "#fff",
+      "font": "24px LiDeBiao-Xing313a04d1d3b1dada",
+      "position": [50, 260]
+    },
+    "mc": {
+      "type": "text",
+      "fillStyle": "#fff",
+      "font": "16px Microsoft YaHei",
+      "position": [50, 300]
+    },
+    "schedule": {
+      "type": "text",
+      "fillStyle": "#fff",
+      "font": "14px Microsoft YaHei",
+      "position": [50, 333]
+    },
+    "address": {
+      "type": "text",
+      "fillStyle": "#fff",
+      "font": "14px Microsoft YaHei",
+      "text": "上园村知行大厦2楼",
+      "position": [50, 354]
+    }	
+  }
+}
