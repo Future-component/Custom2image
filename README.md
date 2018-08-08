@@ -45,6 +45,7 @@
 ```
 
 #### init
+
 参数 | 类型 | 含义 | 例子
 :---|:---|:---|:----
 element | dom | canvas的元素节点 | document.getElementById('mycanvas')
