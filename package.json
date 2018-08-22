@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/BETH-zhang/custom2image/issues"
   },
-  "homepage": "https://github.com/BETH-zhang/custom2image#readme"
+  "homepage": "https://github.com/BETH-zhang/custom2image#readme",
+  "dependencies": {
+    "cnpm": "^6.0.0",
+    "http-server": "^0.11.1"
+  }
 }
